@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — VacciTrack{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>📊 Dashboard</h1>
+  <p class="subtitle">Real-time overview of your vaccination programme</p>
+</div>
+
+<!-- ── KPI Cards ── -->
+<div class="grid-4 mb-4">
+  <div class="card">
+    <div class="card-title">Beneficiaries</div>
+    <div class="stat-value accent">{{ report.total_beneficiaries }}</div>
+    <div class="stat-label">Registered</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Doses Given</div>
+    <div class="stat-value success">{{ report.total_doses_administered }}</div>
+    <div class="stat-label">Total administered</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Overdue</div>
+    <div class="stat-value danger">{{ overdue|length }}</div>
+    <div class="stat-label">Schedules overdue</div>
+  </div>
+  <div class="card">
+    <div class="card-title">CC Alerts</div>
+    <div class="stat-value warning">{{ report.cold_chain_alerts_30d | sum(attribute='total') }}</div>
+    <div class="stat-label">Last 30 days</div>
+  </div>
+</div>
+
+<!-- ── AEFI breakdown + Inventory ── -->
+<div class="grid-2 mb-4">
+
+  <!-- AEFI severity -->
+  <div class="card">
+    <div class="card-title">AEFI Severity Breakdown</div>
+    {% if report.aefi_by_severity %}
+      {% for row in report.aefi_by_severity %}
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span class="badge {% if row.severity=='SEVERE' %}badge-danger{% elif row.severity=='MODERATE' %}badge-warning{% else %}badge-success{% endif %}">
+            {{ row.severity }}
+          </span>
+          <strong>{{ row.total }}</strong>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state"><div class="icon">✅</div>No AEFI records yet</div>
+    {% endif %}
+  </div>
+
+  <!-- Inventory summary -->
+  <div class="card">
+    <div class="card-title">Vaccine Stock (non-expired)</div>
+    {% if report.inventory_summary %}
+      {% for row in report.inventory_summary %}
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:.85rem">{{ row.vaccine_name }}</span>
+          <span class="badge badge-info">{{ row.total_quantity }} doses</span>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state"><div class="icon">📦</div>No inventory yet</div>
+    {% endif %}
+  </div>
+
+</div>
+
+<!-- ── Due today + Overdue alerts ── -->
+<div class="grid-2">
+
+  <div class="card">
+    <div class="card-title">Due Today</div>
+    {% if due_today %}
+      <div class="table-wrap" style="border:none">
+        <table>
+          <thead><tr><th>Beneficiary</th><th>Vaccine</th><th>Dose</th></tr></thead>
+          <tbody>
+            {% for s in due_today %}
+            <tr>
+              <td>{{ s.beneficiary_name or s.beneficiary_id }}</td>
+              <td>{{ s.vaccine_name }}</td>
+              <td>Dose {{ s.dose_number }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state"><div class="icon">📅</div>Nothing due today</div>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <div class="card-title">Recent Overdue</div>
+    {% if overdue %}
+      <div class="table-wrap" style="border:none">
+        <table>
+          <thead><tr><th>Beneficiary</th><th>Vaccine</th><th>Due Date</th></tr></thead>
+          <tbody>
+            {% for s in overdue %}
+            <tr>
+              <td>{{ s.beneficiary_name or s.beneficiary_id }}</td>
+              <td>{{ s.vaccine_name }}</td>
+              <td class="danger">{{ s.due_date }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state"><div class="icon">✅</div>No overdue schedules</div>
+    {% endif %}
+  </div>
+
+</div>
+
+<!-- ── Schedule status distribution ── -->
+{% if report.schedules_by_status %}
+<div class="card mt-6">
+  <div class="card-title">Schedule Status Distribution</div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:4px">
+    {% for row in report.schedules_by_status %}
+      <div style="text-align:center;min-width:80px">
+        <div class="stat-value" style="font-size:1.6rem">{{ row.total }}</div>
+        <span class="badge badge-{{ 'success' if row.status=='COMPLETED' else 'danger' if row.status=='OVERDUE' else 'info' if row.status=='DUE' else 'muted' }}">
+          {{ row.status }}
+        </span>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

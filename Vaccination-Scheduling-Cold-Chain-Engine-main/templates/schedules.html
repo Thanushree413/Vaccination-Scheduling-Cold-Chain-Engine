@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Schedules — VacciTrack{% endblock %}
+{% block content %}
+
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+  <div>
+    <h1>📅 Vaccination Schedules</h1>
+    <p class="subtitle">Track due dates and status for every dose</p>
+  </div>
+  <a href="{{ url_for('add_schedule') }}" class="btn btn-primary">+ Add Schedule</a>
+</div>
+
+<div class="card">
+  {% if schedules %}
+  <div class="table-wrap" style="border:none">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Beneficiary</th><th>Vaccine</th><th>Dose</th>
+          <th>Due Date</th><th>Status</th><th>Notes</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in schedules %}
+        <tr>
+          <td class="text-muted">{{ s.id }}</td>
+          <td>
+            <a href="{{ url_for('view_beneficiary', bid=s.beneficiary_id) }}"
+               style="color:var(--accent);text-decoration:none;font-weight:600">
+              {{ s.beneficiary_name or s.beneficiary_id }}
+            </a>
+          </td>
+          <td>{{ s.vaccine_name }}</td>
+          <td>Dose {{ s.dose_number }}</td>
+          <td>{{ s.due_date }}</td>
+          <td><span class="badge s-{{ s.status|lower }}">{{ s.status }}</span></td>
+          <td class="text-muted">{{ s.notes or '—' }}</td>
+          <td>
+            <div style="display:flex;gap:6px;align-items:center">
+              <!-- Quick status update -->
+              <form method="POST" action="{{ url_for('update_schedule_status', sid=s.id) }}" style="display:flex;gap:4px">
+                <select name="status" class="form-control" style="padding:4px 8px;font-size:.75rem;width:auto">
+                  {% for st in ['NOT_YET','DUE','OVERDUE','COMPLETED','INELIGIBLE'] %}
+                    <option {% if s.status==st %}selected{% endif %}>{{ st }}</option>
+                  {% endfor %}
+                </select>
+                <button class="btn btn-ghost btn-sm" title="Update status">✓</button>
+              </form>
+              <form method="POST" action="{{ url_for('delete_schedule', sid=s.id) }}"
+                    onsubmit="return confirm('Delete this schedule?')">
+                <button class="btn btn-danger btn-sm">🗑</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="icon">📅</div>
+      No schedules created yet.
+      <br><br>
+      <a href="{{ url_for('add_schedule') }}" class="btn btn-primary">Create First Schedule</a>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

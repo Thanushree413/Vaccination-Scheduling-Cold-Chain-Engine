@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block title %}Reports — VacciTrack{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>📈 Reports &amp; Analytics</h1>
+  <p class="subtitle">Vaccination programme summary and coverage analysis</p>
+</div>
+
+<!-- Summary KPIs -->
+<div class="grid-4 mb-4">
+  <div class="card">
+    <div class="card-title">Total Beneficiaries</div>
+    <div class="stat-value accent">{{ report.total_beneficiaries }}</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Doses Administered</div>
+    <div class="stat-value success">{{ report.total_doses_administered }}</div>
+  </div>
+  <div class="card">
+    <div class="card-title">CC Alerts (30d)</div>
+    <div class="stat-value warning">
+      {{ report.cold_chain_alerts_30d | sum(attribute='total') }}
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">AEFI Total</div>
+    <div class="stat-value danger">
+      {{ report.aefi_by_severity | sum(attribute='total') }}
+    </div>
+  </div>
+</div>
+
+<div class="grid-2 mb-4">
+
+  <!-- Doses by vaccine -->
+  <div class="card">
+    <div class="section-title">💊 Doses by Vaccine</div>
+    {% if report.doses_by_vaccine %}
+      {% for row in report.doses_by_vaccine %}
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span>{{ row.vaccine_name }}</span>
+          <span class="badge badge-info">{{ row.total }} doses</span>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state" style="padding:20px"><div class="icon">💊</div>No data yet</div>
+    {% endif %}
+  </div>
+
+  <!-- AEFI breakdown -->
+  <div class="card">
+    <div class="section-title">⚠️ AEFI Severity Breakdown</div>
+    {% if report.aefi_by_severity %}
+      {% for row in report.aefi_by_severity %}
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span class="badge {% if row.severity=='SEVERE' %}badge-danger{% elif row.severity=='MODERATE' %}badge-warning{% else %}badge-success{% endif %}">
+            {{ row.severity }}
+          </span>
+          <strong>{{ row.total }}</strong>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state" style="padding:20px"><div class="icon">✅</div>No AEFI events</div>
+    {% endif %}
+  </div>
+
+</div>
+
+<!-- Schedule status -->
+<div class="card mb-4">
+  <div class="section-title">📅 Schedules by Status</div>
+  {% if report.schedules_by_status %}
+    <div style="display:flex;gap:16px;flex-wrap:wrap">
+      {% for row in report.schedules_by_status %}
+        <div style="text-align:center;padding:16px 20px">
+          <div class="stat-value" style="font-size:2rem">{{ row.total }}</div>
+          <span class="badge s-{{ row.status|lower }}">{{ row.status }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state" style="padding:20px"><div class="icon">📅</div>No schedule data</div>
+  {% endif %}
+</div>
+
+<!-- Vaccine coverage -->
+<div class="card mb-4">
+  <div class="section-title">📊 Vaccination Coverage per Vaccine</div>
+  {% if coverage %}
+  <div class="table-wrap" style="border:none">
+    <table>
+      <thead>
+        <tr><th>Vaccine</th><th>Scheduled</th><th>Completed</th><th>Coverage %</th></tr>
+      </thead>
+      <tbody>
+        {% for row in coverage %}
+        <tr>
+          <td><strong>{{ row.vaccine_name }}</strong></td>
+          <td>{{ row.scheduled }}</td>
+          <td>{{ row.completed }}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="flex:1;background:var(--surface2);border-radius:4px;height:8px;overflow:hidden">
+                <div style="width:{{ row.coverage_pct }}%;background:{% if row.coverage_pct>=80 %}var(--success){% elif row.coverage_pct>=50 %}var(--warning){% else %}var(--danger){% endif %};height:100%;border-radius:4px"></div>
+              </div>
+              <span style="min-width:40px;font-weight:600">{{ row.coverage_pct }}%</span>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="empty-state" style="padding:20px"><div class="icon">📊</div>No coverage data yet</div>
+  {% endif %}
+</div>
+
+<!-- Top overdue -->
+{% if report.top_overdue %}
+<div class="card mb-4">
+  <div class="section-title">🔴 Top Overdue Beneficiaries</div>
+  <div class="table-wrap" style="border:none">
+    <table>
+      <thead><tr><th>Beneficiary ID</th><th>Name</th><th>Overdue Count</th></tr></thead>
+      <tbody>
+        {% for row in report.top_overdue %}
+        <tr>
+          <td><span class="badge badge-muted">{{ row.beneficiary_id }}</span></td>
+          <td><a href="{{ url_for('view_beneficiary', bid=row.beneficiary_id) }}"
+                 style="color:var(--accent);text-decoration:none">{{ row.name }}</a></td>
+          <td><span class="badge badge-danger">{{ row.overdue_count }} overdue</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<!-- Inventory summary -->
+<div class="card">
+  <div class="section-title">📦 Remaining Vaccine Stock</div>
+  {% if report.inventory_summary %}
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      {% for row in report.inventory_summary %}
+        <div class="card" style="padding:14px 20px;min-width:140px;text-align:center">
+          <div class="text-muted text-sm">{{ row.vaccine_name }}</div>
+          <div class="stat-value" style="font-size:1.8rem;color:var(--accent)">{{ row.total_quantity }}</div>
+          <div class="text-sm text-muted">doses</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state" style="padding:20px"><div class="icon">📦</div>No stock data</div>
+  {% endif %}
+</div>
+
+{% endblock %}

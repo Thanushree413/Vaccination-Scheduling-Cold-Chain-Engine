@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Doses — VacciTrack{% endblock %}
+{% block content %}
+
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+  <div>
+    <h1>💊 Doses</h1>
+    <p class="subtitle">Track all vaccination doses administered</p>
+  </div>
+  <a href="{{ url_for('add_dose') }}" class="btn btn-primary">+ Record Dose</a>
+</div>
+
+<div class="card">
+  {% if doses %}
+  <div class="table-wrap" style="border:none">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Beneficiary</th><th>Vaccine</th><th>Dose</th>
+          <th>Date Administered</th><th>Notes</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in doses %}
+        <tr>
+          <td class="text-muted">{{ d.id }}</td>
+          <td>
+            <a href="{{ url_for('view_beneficiary', bid=d.beneficiary_id) }}"
+               style="color:var(--accent);text-decoration:none;font-weight:600">
+              {{ d.beneficiary_name or d.beneficiary_id }}
+            </a>
+            <div class="text-muted text-sm">{{ d.beneficiary_id }}</div>
+          </td>
+          <td>{{ d.vaccine_name }}</td>
+          <td><span class="badge badge-info">Dose {{ d.dose_number }}</span></td>
+          <td>{{ d.administered_date }}</td>
+          <td class="text-muted">{{ d.notes or '—' }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('delete_dose', dose_id=d.id) }}"
+                  onsubmit="return confirm('Delete this dose record?')">
+              <button class="btn btn-danger btn-sm">🗑</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="icon">💊</div>
+      No doses recorded yet.
+      <br><br>
+      <a href="{{ url_for('add_dose') }}" class="btn btn-primary">Record First Dose</a>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

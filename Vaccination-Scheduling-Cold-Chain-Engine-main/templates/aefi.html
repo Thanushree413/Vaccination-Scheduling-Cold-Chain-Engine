@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}AEFI Records — VacciTrack{% endblock %}
+{% block content %}
+
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+  <div>
+    <h1>⚠️ AEFI Management</h1>
+    <p class="subtitle">Adverse Events Following Immunisation</p>
+  </div>
+  <a href="{{ url_for('add_aefi') }}" class="btn btn-primary">+ Report AEFI</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <div class="table-wrap" style="border:none">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Beneficiary</th><th>Vaccine</th><th>Event</th>
+          <th>Severity</th><th>Clearance</th><th>Date</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in records %}
+        <tr>
+          <td class="text-muted">{{ r.id }}</td>
+          <td>
+            <a href="{{ url_for('view_beneficiary', bid=r.beneficiary_id) }}"
+               style="color:var(--accent);text-decoration:none;font-weight:600">
+              {{ r.beneficiary_name or r.beneficiary_id }}
+            </a>
+          </td>
+          <td>{{ r.vaccine_name }}</td>
+          <td style="max-width:220px;word-break:break-word">{{ r.event_description }}</td>
+          <td>
+            <span class="badge {% if r.severity=='SEVERE' %}badge-danger{% elif r.severity=='MODERATE' %}badge-warning{% else %}badge-success{% endif %}">
+              {{ r.severity }}
+            </span>
+          </td>
+          <td>
+            {% if r.medical_clearance %}
+              <span class="badge badge-success">✅ Cleared</span>
+            {% elif r.severity == 'SEVERE' %}
+              <span class="badge badge-danger">⛔ Pending</span>
+            {% else %}
+              <span class="badge badge-muted">N/A</span>
+            {% endif %}
+          </td>
+          <td class="text-muted">{{ r.report_date }}</td>
+          <td>
+            <div style="display:flex;gap:6px">
+              {% if r.severity == 'SEVERE' and not r.medical_clearance %}
+              <form method="POST" action="{{ url_for('clear_aefi', aid=r.id) }}">
+                <button class="btn btn-success btn-sm" title="Grant medical clearance">✅ Clear</button>
+              </form>
+              {% endif %}
+              <form method="POST" action="{{ url_for('delete_aefi', aid=r.id) }}"
+                    onsubmit="return confirm('Delete this AEFI record?')">
+                <button class="btn btn-danger btn-sm">🗑</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="icon">✅</div>
+      No AEFI records found.
+      <br><br>
+      <a href="{{ url_for('add_aefi') }}" class="btn btn-primary">Report First AEFI</a>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

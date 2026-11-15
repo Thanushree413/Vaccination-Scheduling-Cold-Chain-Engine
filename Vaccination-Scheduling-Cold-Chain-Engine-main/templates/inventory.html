@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Inventory — VacciTrack{% endblock %}
+{% block content %}
+
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+  <div>
+    <h1>🗃️ Vaccine Inventory</h1>
+    <p class="subtitle">Manage vaccine stock batches (FEFO strategy)</p>
+  </div>
+  <a href="{{ url_for('add_inventory') }}" class="btn btn-primary">+ Add Stock</a>
+</div>
+
+<!-- Summary cards -->
+{% if summary %}
+<div class="pill-row mb-4">
+  {% for s in summary %}
+    <div class="card" style="padding:12px 20px;min-width:140px;text-align:center">
+      <div class="text-muted text-sm" style="margin-bottom:4px">{{ s.vaccine_name }}</div>
+      <div class="stat-value" style="font-size:1.6rem;color:var(--accent)">{{ s.total_quantity }}</div>
+      <div class="text-sm text-muted">doses available</div>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- Issue stock form -->
+<div class="card mb-4">
+  <div class="section-title">📤 Issue Stock (FEFO)</div>
+  <form method="POST" action="{{ url_for('issue_inventory') }}" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
+    <div class="form-group" style="margin:0;flex:1;min-width:200px">
+      <label>Vaccine Name</label>
+      <input name="vaccine_name" class="form-control" required placeholder="Vaccine name"/>
+    </div>
+    <div class="form-group" style="margin:0;width:140px">
+      <label>Quantity</label>
+      <input name="quantity" type="number" min="1" class="form-control" required placeholder="Qty"/>
+    </div>
+    <button type="submit" class="btn btn-primary" style="margin-bottom:0">Issue</button>
+  </form>
+</div>
+
+<!-- Batches table -->
+<div class="card">
+  <div class="section-title">All Batches</div>
+  {% if batches %}
+  <div class="table-wrap" style="border:none">
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Vaccine</th><th>Batch #</th><th>Quantity</th>
+            <th>Expiry Date</th><th>Temp (°C)</th><th>Status</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        {% for b in batches %}
+        <tr>
+          <td class="text-muted">{{ b.id }}</td>
+          <td><strong>{{ b.vaccine_name }}</strong></td>
+          <td><span class="badge badge-muted">{{ b.batch_number }}</span></td>
+          <td><strong>{{ b.quantity }}</strong></td>
+          <td>{{ b.expiry_date }}</td>
+          <td>{{ b.storage_temp }}°C</td>
+          <td>
+            {% if b.expired %}
+              <span class="badge badge-danger">Expired</span>
+            {% elif b.quantity == 0 %}
+              <span class="badge badge-muted">Empty</span>
+            {% else %}
+              <span class="badge badge-success">In Stock</span>
+            {% endif %}
+          </td>
+          <td>
+            <form method="POST" action="{{ url_for('delete_inventory', bid=b.id) }}"
+                  onsubmit="return confirm('Delete batch {{ b.batch_number }}?')">
+              <button class="btn btn-danger btn-sm">🗑</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="icon">📦</div>No inventory batches yet.
+      <br><br>
+      <a href="{{ url_for('add_inventory') }}" class="btn btn-primary">Add First Batch</a>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}
