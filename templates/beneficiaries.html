@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Beneficiaries — VacciTrack{% endblock %}
+{% block content %}
+
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+  <div>
+    <h1>👥 Beneficiaries</h1>
+    <p class="subtitle">Manage registered vaccination beneficiaries</p>
+  </div>
+  <a href="{{ url_for('add_beneficiary') }}" class="btn btn-primary">+ Add Beneficiary</a>
+</div>
+
+<div class="card">
+  {% if beneficiaries %}
+  <div class="table-wrap" style="border:none">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th><th>Name</th><th>Date of Birth</th><th>Gender</th>
+          <th>Guardian</th><th>Phone</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in beneficiaries %}
+        <tr>
+          <td><span class="badge badge-muted">{{ b.beneficiary_id }}</span></td>
+          <td><a href="{{ url_for('view_beneficiary', bid=b.beneficiary_id) }}"
+                 style="color:var(--accent);text-decoration:none;font-weight:600">{{ b.name }}</a></td>
+          <td>{{ b.date_of_birth }}</td>
+          <td>{{ b.gender or '—' }}</td>
+          <td>{{ b.guardian_name or '—' }}</td>
+          <td>{{ b.phone or '—' }}</td>
+          <td>
+            <div style="display:flex;gap:6px">
+              <a href="{{ url_for('view_beneficiary', bid=b.beneficiary_id) }}" class="btn btn-ghost btn-sm">👁 View</a>
+              <a href="{{ url_for('edit_beneficiary', bid=b.beneficiary_id) }}" class="btn btn-ghost btn-sm">✏️ Edit</a>
+              <form method="POST" action="{{ url_for('delete_beneficiary', bid=b.beneficiary_id) }}"
+                    onsubmit="return confirm('Delete {{ b.name }}? This cannot be undone.')">
+                <button class="btn btn-danger btn-sm">🗑</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="icon">👥</div>
+      No beneficiaries registered yet.
+      <br><br>
+      <a href="{{ url_for('add_beneficiary') }}" class="btn btn-primary">Add First Beneficiary</a>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Cold Chain — VacciTrack{% endblock %}
+{% block content %}
+
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+  <div>
+    <h1>🌡️ Cold Chain Monitoring</h1>
+    <p class="subtitle">Log and monitor temperature readings for vaccine safety</p>
+  </div>
+  <a href="{{ url_for('log_coldchain') }}" class="btn btn-primary">+ Log Reading</a>
+</div>
+
+<!-- Alerts banner -->
+{% if alerts %}
+<div class="card mb-4" style="border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.06)">
+  <div class="section-title danger">🚨 Active Alerts ({{ alerts|length }})</div>
+  <div class="table-wrap" style="border:none">
+    <table>
+      <thead><tr><th>Vaccine</th><th>Temp (°C)</th><th>Heat Hrs</th><th>VVM</th><th>Status</th><th>Recorded</th><th>Action</th></tr></thead>
+      <tbody>
+        {% for a in alerts %}
+        <tr>
+          <td><strong>{{ a.vaccine_name }}</strong></td>
+          <td class="danger">{{ a.temperature }}°C</td>
+          <td>{{ a.cumulative_heat_hours }}</td>
+          <td>Stage {{ a.vvm_stage }}</td>
+          <td><span class="badge badge-danger">{{ a.status }}</span></td>
+          <td class="text-muted">{{ a.recorded_at }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('delete_coldchain', rid=a.id) }}"
+                  onsubmit="return confirm('Delete this reading?')">
+              <button class="btn btn-danger btn-sm">🗑</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<!-- All readings -->
+<div class="card">
+  <div class="section-title">All Temperature Readings</div>
+  {% if readings %}
+  <div class="table-wrap" style="border:none">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Vaccine</th><th>Temp (°C)</th><th>Cumul. Heat Hrs</th>
+            <th>Freeze Sensitive</th><th>VVM Stage</th><th>Status</th><th>Recorded At</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        {% for r in readings %}
+        <tr>
+          <td class="text-muted">{{ r.id }}</td>
+          <td><strong>{{ r.vaccine_name }}</strong></td>
+          <td class="{% if r.temperature < 2 or r.temperature > 8 %}warning{% endif %}">{{ r.temperature }}°C</td>
+          <td>{{ r.cumulative_heat_hours }}</td>
+          <td>{{ 'Yes' if r.freeze_sensitive else 'No' }}</td>
+          <td>{{ r.vvm_stage }}</td>
+          <td>
+            <span class="badge {% if r.status=='SAFE' %}badge-success{% elif r.status=='QUARANTINE' %}badge-warning{% else %}badge-danger{% endif %}">
+              {{ r.status }}
+            </span>
+          </td>
+          <td class="text-muted">{{ r.recorded_at }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('delete_coldchain', rid=r.id) }}"
+                  onsubmit="return confirm('Delete reading?')">
+              <button class="btn btn-danger btn-sm">🗑</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="icon">🌡️</div>No temperature readings logged yet.
+      <br><br>
+      <a href="{{ url_for('log_coldchain') }}" class="btn btn-primary">Log First Reading</a>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}
