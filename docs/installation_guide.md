@@ -1,35 +1,93 @@
-# Installation Guide — VacciTrack PS-065
+Installation Guide
 
-## Prerequisites
-- Python 3.10 or later
-- pip
+Vaccine Dose Management System
 
-## Steps
+1. Introduction
 
-```bash
-# 1. Navigate to the project folder
-cd "C:\Users\ACER\New folder (T113-PS-065)"
+This guide explains how to download, install, and run the Vaccine Dose Management System on a Windows computer.
 
-# 2. Install the only external dependency
-pip install flask
+2. Prerequisites
 
-# 3. (Optional) Verify Python and Flask
-python --version
-python -c "import flask; print('Flask OK')"
+Install the following software:
 
-# 4. Load demo data
-python seed_data.py
+- Python 3
+- Visual Studio Code (recommended)
+- Git (optional, for cloning the repository)
 
-# 5. Start the application
+3. Download the Project
+
+Clone the GitHub repository:
+
+git clone https://github.com/Thanushree413/Vaccination-Scheduling-Cold-Chain-Engine.git
+
+Alternatively, download the repository as a ZIP file from GitHub and extract it.
+
+4. Open the Project
+
+Open the extracted project folder in Visual Studio Code.
+
+Open the VS Code terminal using:
+
+Terminal → New Terminal
+
+5. Create a Virtual Environment
+
+Run:
+
+python -m venv venv
+
+6. Activate the Virtual Environment
+
+For Windows PowerShell:
+
+.\venv\Scripts\Activate.ps1
+
+If PowerShell blocks activation, you can use Command Prompt:
+
+venv\Scripts\activate.bat
+
+7. Install Dependencies
+
+Run:
+
+pip install -r requirements.txt
+
+8. Run the Application
+
+Run:
+
 python app.py
-```
 
-Open **http://127.0.0.1:5000** in your browser.
+Wait until the Flask server starts.
 
-## Run Tests
-```bash
-python -m pytest tests/ -v
-```
+9. Open the Application
 
-## Resetting the Database
-Delete `vaccination.db` then restart — tables and seed data are recreated automatically.
+Open Chrome, Edge, or another browser and visit:
+
+http://127.0.0.1:5000
+
+10. Stop the Application
+
+Return to the terminal and press:
+
+Ctrl + C
+
+11. Troubleshooting
+
+Python is not recognised
+
+Check that Python is installed and added to the system PATH.
+
+Required module is missing
+
+Run:
+
+pip install -r requirements.txt
+
+Port is already in use
+
+Close the other application using the port or configure the Flask application to use another available port.
+
+12. Conclusion
+
+Following these instructions allows users to set up and run the Vaccine Dose Management System locally.

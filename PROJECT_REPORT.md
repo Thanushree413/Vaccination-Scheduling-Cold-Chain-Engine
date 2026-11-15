@@ -1,69 +1,125 @@
-VACCINE DOSE MANAGEMENT SYSTEM
+PROJECT REPORT
+
+Vaccine Dose Management System
+
+Vaccination Scheduling and Cold Chain Management Engine
 
 1. Abstract
 
-The Vaccine Dose Management System is a Python-based application designed to simplify and manage vaccination activities. It helps maintain beneficiary records, track vaccine doses, schedule appointments, manage inventory, monitor cold-chain information and record Adverse Events Following Immunization (AEFI).
+The Vaccine Dose Management System is a web-based application designed to support the management of vaccination activities. It helps administrators maintain beneficiary records, manage vaccination schedules, record administered doses, monitor vaccine inventory, and support cold-chain management.
+
+The system aims to improve organisation, record keeping, and accessibility of vaccination-related information.
 
 2. Introduction
 
-Vaccination management requires accurate records, proper dose scheduling and effective inventory management. This project provides a digital system to organize these activities and reduce manual record-keeping.
+Vaccination programmes require accurate beneficiary information, proper dose tracking, effective scheduling, and reliable vaccine inventory management.
+
+Manual record keeping can lead to errors, delays, and difficulty retrieving information. This project provides a centralised application to organise these activities through a web interface.
 
 3. Objectives
 
 - Maintain beneficiary information.
-- Manage vaccine dose records.
-- Schedule vaccination doses.
-- Track vaccine inventory.
-- Monitor cold-chain information.
-- Record AEFI incidents.
-- Generate vaccination reports.
+- Manage vaccination schedules.
+- Record vaccine dose details.
+- Monitor vaccine inventory.
+- Support cold-chain monitoring.
+- Generate useful vaccination and inventory reports.
+- Improve the organisation of vaccination records.
 
 4. Technologies Used
 
-- Programming Language: Python
-- Backend: Flask
-- Frontend: HTML, CSS
-- Database: SQLite
-- Testing: Pytest
+Technology| Purpose
+Python| Backend programming
+Flask| Web application framework
+HTML| Page structure
+CSS| Page styling
+JavaScript| Client-side interactions
+Pytest| Software testing
+SQLite| Database, if used in the implementation
 
-5. Modules
+5. System Modules
 
-1. Beneficiary Management
-2. Dose Management
-3. Scheduling Management
-4. Inventory Management
-5. Cold Chain Management
-6. AEFI Management
-7. Reports Management
+5.1 Dashboard Module
+
+Provides an overview of the system and important vaccination information.
+
+5.2 Beneficiary Management Module
+
+Maintains beneficiary details and supports the management of registered beneficiaries.
+
+5.3 Dose Management Module
+
+Records and tracks vaccine dose information.
+
+5.4 Scheduling Module
+
+Supports the organisation of vaccination appointments and schedules.
+
+5.5 Inventory Management Module
+
+Helps monitor available vaccine stock and inventory information.
+
+5.6 Cold Chain Management Module
+
+Supports the recording and monitoring of vaccine storage conditions.
+
+5.7 Reports Module
+
+Provides access to vaccination and inventory-related information.
 
 6. System Architecture
 
-The system uses a web-based architecture. Users interact with the application through the interface. Flask handles application requests, Python modules perform the required operations, and the database stores relevant information.
+The application follows a web-based architecture:
+
+1. The user interacts with the application through the browser.
+2. HTML, CSS, and JavaScript provide the user interface.
+3. Flask handles application requests and backend logic.
+4. The data layer stores and retrieves application information.
 
 7. Implementation
 
-The project is organized into separate modules for beneficiary registration, dose tracking, scheduling, inventory, cold-chain monitoring, AEFI recording and reports. Flask is used to run the web application.
+The system was developed using Python and Flask for backend functionality and web technologies for the user interface.
+
+The application includes separate pages and modules for dashboard information, beneficiaries, doses, inventory, and reports.
 
 8. Testing
 
-The application was tested using Pytest. The previous test execution reported 102 passed tests.
+Testing was performed using Pytest.
+
+Command used:
+
+python -m pytest -q
+
+Previously reported test result: 102 passed.
+
+The test suite should be executed again on the final version before submission.
 
 9. Advantages
 
-- Reduces manual record keeping.
-- Improves organization of vaccination data.
-- Helps track vaccine doses.
-- Supports inventory management.
-- Makes information easier to retrieve.
+- Centralised vaccination information.
+- Easier beneficiary record management.
+- Organised dose tracking.
+- Better inventory visibility.
+- Convenient access through a web interface.
+- Support for systematic record keeping.
 
 10. Future Enhancements
 
-- SMS and email reminders.
-- QR code-based beneficiary identification.
-- Advanced analytics and dashboards.
-- Role-based access control.
-- Cloud deployment.
+- Automated SMS and email reminders.
+- Advanced reporting and analytics.
+- Improved vaccine stock alerts.
+- Enhanced cold-chain monitoring.
+- Role-based authentication and access control.
+- Integration with external healthcare systems.
 
 11. Conclusion
 
-The Vaccine Dose Management System provides a structured approach to managing vaccination-related information. It integrates beneficiary management, dose scheduling, inventory tracking and reporting into one application. The project demonstrates how software technology can support efficient vaccination management
+The Vaccine Dose Management System provides a structured way to manage vaccination-related activities. It brings together beneficiary management, dose tracking, scheduling, inventory management, and reporting in one application.
+
+The project demonstrates how web technologies can support the organisation of healthcare administration. Further improvements can enhance automation, security, monitoring, and usability.
+
+12. Project Repository
+
+GitHub:
+
+https://github.com/Thanushree413/Vaccination-Scheduling-Cold-Chain-Engine

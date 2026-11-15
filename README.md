@@ -1,156 +1,116 @@
-# 💉 VacciTrack — Vaccination Scheduling & Cold-Chain Engine
-### PS-065 | Team T113
+Vaccine Dose Management System
 
-A production-ready web application for healthcare administrators to manage vaccination programmes end-to-end: beneficiary registration, dose tracking, scheduling, vaccine inventory, cold-chain monitoring, AEFI reporting and analytics.
+Vaccination Scheduling and Cold Chain Management Engine
 
----
+A web-based application designed to manage vaccination scheduling, beneficiary records, dose tracking, vaccine inventory, and cold-chain monitoring.
 
-## 🚀 Quick Start
+Project Overview
 
-### 1. Install dependencies
-```bash
-pip install flask
-```
+The Vaccine Dose Management System helps healthcare administrators manage vaccination activities in an organised way. It provides features for maintaining beneficiary information, recording vaccine doses, monitoring inventory, and viewing reports.
 
-### 2. Seed demo data (first time only)
-```bash
-python seed_data.py
-```
+Key Features
 
-### 3. Run the application
-```bash
-python app.py
-```
+- Dashboard: View an overview of vaccination activities.
+- Beneficiary Management: Register and manage beneficiary information.
+- Dose Management: Record and track vaccine doses.
+- Vaccination Scheduling: Manage vaccination appointments.
+- Inventory Management: Monitor vaccine stock.
+- Cold Chain Management: Support monitoring of vaccine storage conditions.
+- Reports: View vaccination and inventory information.
 
-### 4. Open in browser
-```
-http://127.0.0.1:5000
-```
+Technologies Used
 
----
+- Python
+- Flask
+- HTML
+- CSS
+- JavaScript
+- SQLite (if used by the project)
+- Pytest for testing
 
-## 🧪 Run Tests
+Project Structure
 
-```bash
-# Original 9 tests (in-memory logic)
-python -m pytest tests/test_engine.py -v
-
-# Full suite — 70+ integration & Flask tests
-python -m pytest tests/test_full.py -v
-
-# All tests together
-python -m pytest tests/ -v
-```
-
----
-
-## 📁 Project Structure
-
-```
-T113-PS-065/
-├── app.py                  ← Flask web application (all routes)
-├── seed_data.py            ← Loads realistic demo data
-├── requirements.txt        ← pip install flask
-├── vaccination.db          ← SQLite database (auto-created)
+Vaccination-Scheduling-Cold-Chain-Engine/
+│
+├── app.py
+├── main.py
+├── requirements.txt
+├── README.md
+├── PROJECT_REPORT.md
 │
 ├── src/
-│   ├── database.py         ← DB connection + create_tables()
-│   ├── beneficiary.py      ← Beneficiary CRUD
-│   ├── dose.py             ← Dose recording
-│   ├── schedule.py         ← Scheduling + status engine
-│   ├── inventory.py        ← FEFO stock management
-│   ├── cold_chain.py       ← Temperature monitoring
-│   ├── aefi.py             ← Adverse event management
-│   └── reports.py          ← Analytics & coverage reports
-│
 ├── templates/
-│   ├── base.html           ← Dark sidebar layout
-│   ├── dashboard.html      ← KPI cards + live charts
-│   ├── beneficiaries.html  ← Beneficiary list
-│   ├── add_beneficiary.html
-│   ├── edit_beneficiary.html
-│   ├── view_beneficiary.html
-│   ├── doses.html
-│   ├── add_dose.html
-│   ├── schedules.html
-│   ├── add_schedule.html
-│   ├── inventory.html
-│   ├── add_inventory.html
-│   ├── coldchain.html
-│   ├── log_coldchain.html
-│   ├── aefi.html
-│   ├── add_aefi.html
-│   └── reports.html
-│
-├── tests/
-│   ├── test_engine.py      ← 9 original logic tests
-│   └── test_full.py        ← 70+ integration tests
-│
-└── docs/
-    ├── project_overview.md
-    ├── business_rules.md
-    ├── installation_guide.md
-    └── ...
-```
+├── data/
+├── docs/
+└── tests/
 
----
+Installation and Setup
 
-## 🌐 Application Pages
+1. Clone the repository
 
-| URL | Description |
-|-----|-------------|
-| `/` | Dashboard — KPIs, alerts, charts |
-| `/beneficiaries` | List all beneficiaries |
-| `/beneficiaries/add` | Register new beneficiary |
-| `/beneficiaries/<id>` | View beneficiary profile |
-| `/beneficiaries/<id>/edit` | Edit beneficiary |
-| `/doses` | All dose records |
-| `/doses/add` | Record a new dose |
-| `/schedules` | Vaccination schedule (auto-refreshed status) |
-| `/schedules/add` | Add new schedule entry |
-| `/inventory` | Vaccine batch stock list |
-| `/inventory/add` | Add new stock batch |
-| `/coldchain` | Temperature readings + alerts |
-| `/coldchain/log` | Log a temperature reading |
-| `/aefi` | Adverse event records |
-| `/aefi/add` | Report new AEFI |
-| `/reports` | Analytics + coverage charts |
+git clone https://github.com/Thanushree413/Vaccination-Scheduling-Cold-Chain-Engine.git
 
----
+2. Open the project folder
 
-## 🗄️ Database Tables
+cd Vaccination-Scheduling-Cold-Chain-Engine
 
-| Table | Purpose |
-|-------|---------|
-| `beneficiaries` | Registered individuals |
-| `doses` | Administered vaccine doses |
-| `schedules` | Planned vaccinations with live status |
-| `inventory` | Vaccine batches (FEFO ordering) |
-| `cold_chain` | Temperature readings + alerts |
-| `aefi` | Adverse events following immunisation |
+3. Create a virtual environment (recommended)
 
----
+python -m venv venv
 
-## ⚙️ Business Rules
+4. Activate the virtual environment
 
-| Rule | Detail |
-|------|--------|
-| Schedule status | `NOT_YET` → `DUE` (day-of) → `OVERDUE` (>28 days) → `COMPLETED` |
-| Inventory | FEFO — First Expiry, First Out |
-| Cold-chain | `SAFE` / `QUARANTINE` (>48 heat-hours) / `DISCARD` (VVM≥3 or freeze) |
-| AEFI clearance | SEVERE events require manual medical clearance |
+Windows PowerShell:
 
----
+.\venv\Scripts\Activate.ps1
 
-## 🔧 Technology Stack
+5. Install dependencies
 
-- **Backend**: Python 3.10+ · Flask 3.x
-- **Database**: SQLite 3 (stdlib — no extra install)
-- **Frontend**: HTML5 · CSS3 · Vanilla JS (no frameworks)
-- **Testing**: pytest
+pip install -r requirements.txt
 
----
+6. Run the application
 
-## 👥 Team
+python app.py
 
-**PS-065 · Team T113** — Vaccination Scheduling and Cold-Chain Engine
+Open your browser and visit:
+
+"http://127.0.0.1:5000"
+
+Running Tests
+
+Run the test suite using:
+
+python -m pytest -q
+
+The project previously completed 102 passing tests in the reported test run. Run the command again to verify the current version.
+
+Documentation
+
+Additional project documentation is available in the "docs/" folder, including:
+
+- Project overview
+- Installation guide
+- Eligibility rules
+- Business rules
+- Testing guide
+- Edge case tests
+- State diagram
+- Class diagram
+- Decision log
+- Glossary
+
+Future Enhancements
+
+- Automated appointment reminders
+- Enhanced reporting and analytics
+- Improved inventory alerts
+- More detailed cold-chain monitoring
+- Role-based access control
+
+Conclusion
+
+The Vaccine Dose Management System provides a structured approach to managing vaccination records, scheduling, dose tracking, and vaccine inventory. It is designed to support organised healthcare administration and can be extended with additional features in the future.
+
+Repository
+
+GitHub: https://github.com/Thanushree413/Vaccination-Scheduling-Cold-Chain-Engine

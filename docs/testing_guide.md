@@ -1,61 +1,81 @@
-# Testing Guide — VacciTrack PS-065
+Testing Guide
 
-## Test Suites
+Vaccine Dose Management System
 
-### 1. Original Logic Tests (`tests/test_engine.py`)
-9 unit tests for the core scheduling and beneficiary in-memory functions.
+1. Introduction
 
-```bash
-python -m pytest tests/test_engine.py -v
-```
+This document explains how to run and verify the tests for the Vaccine Dose Management System.
 
-Expected: **9 passed**
+Testing helps identify errors and verify that the application's features work as expected.
 
-### 2. Full Integration Suite (`tests/test_full.py`)
-70+ tests covering every module, DB integration, edge cases, and Flask routes.
+2. Testing Framework
 
-```bash
-python -m pytest tests/test_full.py -v
-```
+The project uses:
 
-### 3. Run All Tests
-```bash
-python -m pytest tests/ -v
-```
+- Python
+- Pytest
 
----
+3. Prerequisites
 
-## Test Coverage Areas
+Before running tests, ensure that:
 
-| Module | Test Class | Key Scenarios |
-|--------|-----------|---------------|
-| Database | `TestDatabase` | Tables created, FK pragma |
-| Beneficiary | `TestBeneficiary` | CRUD, duplicate ID, future DOB, blank fields |
-| Dose | `TestDose` | Add/delete, invalid numbers, schedule auto-complete |
-| Schedule | `TestSchedule` | Status engine, 28-day boundary, refresh, CRUD |
-| Inventory | `TestInventory` | FEFO, upsert, expired stock, insufficient stock |
-| Cold Chain | `TestColdChain` | SAFE/QUARANTINE/DISCARD rules, freeze, VVM stage |
-| AEFI | `TestAEFI` | Severity, auto-clearance, medical clearance, edge cases |
-| Reports | `TestReports` | Coverage %, empty DB, full report with data |
-| Flask Routes | `TestFlaskRoutes` | All pages return 200/302, form submissions |
+- Python is installed.
+- The project repository is downloaded.
+- Required dependencies are installed.
+- The terminal is opened in the project root directory.
 
----
+4. Install Dependencies
 
-## Isolation Strategy
-Every test uses a temporary SQLite file (via `pytest` `tmp_path` fixture + `monkeypatch`). The real `vaccination.db` is never touched during testing.
+Run:
 
----
+pip install -r requirements.txt
 
-## Edge Cases Tested
+If pytest is not included in the requirements file, install it using:
 
-- Duplicate beneficiary ID → `ValueError`
-- Future date of birth → `ValueError`
-- Dose number ≤ 0 → `ValueError`
-- Adding expired vaccine stock → `ValueError`
-- Issuing more stock than available → `ValueError`
-- VVM stage ≥ 3 → DISCARD
-- Heat hours > 48 → QUARANTINE
-- Freeze-sensitive vaccine below 0°C → DISCARD
-- SEVERE AEFI without medical clearance blocks next dose
-- Exactly 28 days late → DUE (not OVERDUE)
-- 29 days late → OVERDUE
+pip install pytest
+
+5. Run All Tests
+
+To run all tests with detailed output:
+
+python -m pytest -v
+
+To run tests with concise output:
+
+python -m pytest -q
+
+6. Test Categories
+
+The test suite may cover the following areas, depending on the implemented tests:
+
+- Beneficiary management
+- Vaccine dose management
+- Vaccination eligibility
+- Scheduling and validation
+- Inventory management
+- Cold-chain rules
+- Business rules
+- Edge cases
+
+7. Previous Test Result
+
+The project previously produced the following result:
+
+102 tests passed.
+
+Run the test command again before final submission to confirm the current result.
+
+8. Expected Result
+
+A successful test run should show that all executed tests pass without failures or errors.
+
+If a test fails:
+
+1. Read the failure message.
+2. Identify the affected module.
+3. Correct the issue.
+4. Run the tests again.
+
+9. Conclusion
+
+Testing is an important part of the Vaccine Dose Management System development process. It helps verify application behaviour and improves software reliability.
