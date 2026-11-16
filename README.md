@@ -8,7 +8,7 @@ Project Overview
 
 The Vaccine Dose Management System helps healthcare administrators manage vaccination activities in an organised way. It provides features for maintaining beneficiary information, recording vaccine doses, monitoring inventory, and viewing reports.
 
-Key Features
+Key Features-
 
 - Dashboard: View an overview of vaccination activities.
 - Beneficiary Management: Register and manage beneficiary information.
